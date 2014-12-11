@@ -1,7 +1,6 @@
 <?php
 
 	error_reporting(E_ERROR);
-	error_reporting(E_ALL);
     
 	if (!session_id())
 		session_start();
@@ -15,7 +14,7 @@
 	$user_domain=$tmp[1];
     
 	if (stristr(PHP_OS, 'WIN')){
-		define('DATA_DIR',implode(DIRECTORY_SEPARATOR,Array("D:","ms4w","data",$user_data)).DIRECTORY_SEPARATOR);
+		define('DATA_DIR',implode(DIRECTORY_SEPARATOR,Array("D:","Applicazioni","data",$user_data)).DIRECTORY_SEPARATOR);
 		//define('APPS_DIR',implode(DIRECTORY_SEPARATOR,Array("D:","ms4w","apps","praticaweb-2.0")).DIRECTORY_SEPARATOR);
 	}
 	else{
