@@ -13,104 +13,16 @@ $tabpath="stp";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<SCRIPT language="javascript" src="js/massive.print.js" type="text/javascript"></SCRIPT>
 <script language="javascript">
+
 
 var lim = 20;
 var docToPrint = [];
-function getSearchData(){
-    var data = {};
-    $.each($('#frmSearch .textbox'),function(key,val){
-        var v = $(val).val();
-        if (v){
-            data[val.id] = v;
-        }
-    });
-    return data;
-}
-
-function showResult(data,textStatus,jqXHR){
-    if (data["data"].length>0){
-        for(i=0;i<data["data"].length;i++){
-            var el = data["data"][i];
-            var j = (i%4)+1;
-            $('#col-'+j).append('<div>\
-    <div>' + (i+1) + ') \
-        <input type="checkbox" name="pratica" id="pratica-' + el['pratica'] + '" value="' + el['pratica'] + '" checked="checked">\
-        Pratica n° ' + el['numero']+ ' del ' + el['data_presentazione'] + '\
-    </div> <div id="printed-' + el['pratica'] + '"></div>\
-</div>') 
-        }
-        $('#azione-cerca').hide();
-        $('#div-check-all').show();
-        $('#azione-stampa').show();
-    }
-    else{
-    
-    }
-}
-
-function showPrinted(data,textStatus,jqXHR){
-    if (data["success"]==1  && data["data"].length>0){
-        for(i=0;i<data["data"].length;i++){
-            var el = data["data"][i];
-            var testo = '<img src="images/word.gif" border=0 >&nbsp;&nbsp;<a target="documenti" href="./openDocument.php?id=' + el['id'] +'&pratica=' + el['pratica'] + '" >' + el['name'] + '</a>';
-            $('#printed-' + el['pratica']).html(testo);
-        }
-        printDoc();
-    }
-}
-
-function printDoc(){
-    var toPrint = docToPrint.splice(0,lim);
-    mod = 130;
-    if (toPrint.length > 0){
-        $.ajax({
-            url:'services/xPrint.php',
-            data: {action:'print',params:toPrint,model:mod},
-            dataType: 'json',
-            success:showPrinted,
-            error:function(jqXHR,textStatus,errorThrown){},
-            type:'POST'
-        });
-    }
-    else{
-        
-    }
-}
-
-function search(obj){
-    var msg = ''
-    if (!$('#tipo').val()){
-        msg += '<p> <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>Selezionare una tipologia di pratica!</p>'
-    }
-    if (!$('#numero_in').val()){
-        msg += '<p> <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>Selezionare una numero di pratica iniziale!</p>'
-    }
-    if (!$('#numero_fi').val()){
-        msg += '<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>Selezionare una numero di pratica finale!</p>'
-    }
-    if (msg){
-        $('<div>' + msg + '</div>').dialog({'title':'Attenzione','modal':true,width:500});
-        return false;
-    }
-    else{
-        var dataSend = {};
-        dataSend['params'] = getSearchData();
-        dataSend['action']='search';
-        $.ajax({
-            url:'services/xPrint.php',
-            data: dataSend,
-            dataType: 'json',
-            success:showResult,
-            error:function(jqXHR,textStatus,errorThrown){},
-            type:'POST'
-        });
-    }
-    return true;
-}
 
 $(document).ready(function(){
     $('#azione-stampa').hide();
+    
     $('#azione-cerca').button({
         icons: {
             primary: "ui-icon-search"
@@ -120,6 +32,7 @@ $(document).ready(function(){
         event.preventDefault();  
         search(this);
     });
+    
     $('#azione-stampa').button({
         icons: {
             primary: "ui-icon-print"
@@ -133,6 +46,7 @@ $(document).ready(function(){
         });
         printDoc();
     });
+    
     $('#check-all').bind('change',function(event){
         event.preventDefault();
         if($(this).is(':checked')){

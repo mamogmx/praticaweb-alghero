@@ -68,7 +68,12 @@ EOT;
                 );
                 $db->insert('pe.iter',$data);
                 
-                $result["data"][]=Array("id"=>$lastid,"pratica"=>$idpratica,"name"=>$doc->basename);
+                $result["data"][]=Array("id"=>$lastid,"pratica"=>$idpratica,"name"=>$doc->basename,"success"=>1);
+            }
+            else if($duplicated){
+                $r=$db->fetchAssoc("SELECT id,data_creazione_doc FROM stp.stampe pratica=? and modello=? order by tmsins DESC LIMIT 1",Array($idpratica,$id_modello),0);
+                list($id,$data)=  array_values($r);
+                $result["data"][]=Array("id"=>$id,"pratica"=>$idpratica,"data"=>$data,"success"=>0);
             }
             $result["success"]=1;
         }
